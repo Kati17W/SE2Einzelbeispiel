@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             for (int j = i + 1; j < matrikelNrList.size(); j++) {
                 List<Integer> sublist = matrikelNrList.subList(i, j+1);
                 int gcd = gcdList(sublist); if (gcd > 1) {
-                    indexPrint.setText("Numbers at indexes " + i + " to " + j + " have a greatest common divisor of " + gcd);
+                    indexPrint.setText("Numbers at indexes " + i + ", " + j);
                 }
             }
         }
@@ -72,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
     public static int gcd(int a, int b) {
         if (b == 0) {
             return a;
-        }
-        else {
+        }    else {
             return gcd(b, a % b);
         }
     }
+
     public static int gcdList(List<Integer> list) {
         int result = list.get(0);
         for (int i = 1; i < list.size(); i++) {
