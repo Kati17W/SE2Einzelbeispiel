@@ -24,7 +24,7 @@
         android:ems="10"
         android:inputType="phone"
         android:minHeight="48dp"
-        tools:ignore="MissingConstraints"
+        tools:ignore="MissingConstraints,SpeakableTextPresentCheck,SpeakableTextPresentCheck"
         tools:layout_editor_absoluteX="104dp"
         tools:layout_editor_absoluteY="245dp" />
 
