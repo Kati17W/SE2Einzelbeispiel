@@ -15,14 +15,18 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView textView;
-    Button button;
-    EditText editTextNumber;
-    TextView textView2;
-    Button button2;
+    Button sendButton;
+    EditText matrikleNrText;
+    TextView serverResponse;
+    TextView indexPrint;
+
 
     Handler handler = new Handler();
 
@@ -32,29 +36,57 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = (TextView) findViewById(R.id.textView);
-        button = (Button) findViewById(R.id.button);
-        button2 = (Button) findViewById(R.id.button2);
-        editTextNumber = (EditText) findViewById(R.id.editTextNumber);
-        textView2 = (TextView) findViewById(R.id.textView2);
-        button.setOnClickListener(new View.OnClickListener() {
+        sendButton = (Button) findViewById(R.id.button);
+        matrikleNrText = (EditText) findViewById(R.id.editTextNumber);
+        serverResponse = (TextView) findViewById(R.id.textView2);
+        indexPrint = (TextView) findViewById(R.id.textView3);
+        sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                printGGTIndex();
                 Server server = new Server();
                 new Thread(server).start();
             }
         });
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Index index = new Index();
-                new Thread(index).start();
+
+    }
+
+    private void printGGTIndex() {
+        final String matrikelNr = matrikleNrText.getText().toString();
+        final List<Integer> matrikelNrList = new ArrayList<>();
+
+        for (String nummer : matrikelNr.split("")) {
+            matrikelNrList.add(Integer.parseInt(nummer));
+        }
+
+        for (int i = 0; i < matrikelNrList.size() - 1; i++) {
+            for (int j = i + 1; j < matrikelNrList.size(); j++) {
+                List<Integer> sublist = matrikelNrList.subList(i, j+1);
+                int gcd = gcdList(sublist); if (gcd > 1) {
+                    indexPrint.setText("Numbers at indexes " + i + " to " + j + " have a greatest common divisor of " + gcd);
+                }
             }
-        });
+        }
+
+    }
+    public static int gcd(int a, int b) {
+        if (b == 0) {
+            return a;
+        }
+        else {
+            return gcd(b, a % b);
+        }
+    }
+    public static int gcdList(List<Integer> list) {
+        int result = list.get(0);
+        for (int i = 1; i < list.size(); i++) {
+            result = gcd(result, list.get(i));
+        }
+        return result;
     }
 
     class Server extends Thread {
-        private String in = editTextNumber.getText().toString();
+        private String in = matrikleNrText.getText().toString();
         private String out = "";
 
         public void run() {
@@ -75,17 +107,13 @@ public class MainActivity extends AppCompatActivity {
                 s.close();
 
                 handler.post(()->{
-                    textView2.setText(out);
+                    serverResponse.setText(out);
                 });
 
             } catch (IOException e) {
                 e.printStackTrace(System.out);
             }
         }
-
-    }
-
-    class Index extends Thread{
 
     }
 
